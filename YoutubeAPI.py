@@ -6,12 +6,6 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import argparse
 import json
 
-
-# Retrieving Channel Ids
-api_key = "AIzaSyCsCfOEng2WhtMHQoCi0FX48OPB5tw-F5g"
-youtube = build("youtube", "v3", developerKey=api_key)
-
-
 def print_title_from_search_results_video(res):
 	for item in res['items']:
 		print(item['snippet']['title'])
@@ -205,6 +199,7 @@ def main():
 	parser.add_argument("-c2", "--second_channel", required=False,
 	help="second channel to retrieve data")	
 	parser.add_argument("-k", "--keywords_path", required=False, help = ".txt file containing keywords for searching")
+	parser.add_argument("-api", "--api_key", required=False, help = "your api key")
 	
 	args = vars(parser.parse_args())
 
@@ -214,7 +209,9 @@ def main():
 	channel_2 = str(args["second_channel"]) if args["second_channel"] else "CNN"
 	default_keywords = ["riot", "george floyd", "protest", "crowd", "police", "black", "officer", "violent", "cop", "policing", "floyd"]
 	keywords =  get_user_keywords(keywords_path) if keywords_path is not "" else default_keywords
-
+	# Retrieving Channel Ids
+	api_key =  str(args["api_key"]) if args["api_key"] else "AIzaSyCsCfOEng2WhtMHQoCi0FX48OPB5tw-F5g"
+	youtube = build("youtube", "v3", developerKey=api_key)
 
 	# Quick-start Test
 	#transcript_test = get_transcripts("Wf4cea5oObY")
