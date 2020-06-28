@@ -1,0 +1,5 @@
+Required Packages Install Via Pip/Pip3
+
+google-api-python-client
+youtube_transcript_api
+

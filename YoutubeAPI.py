@@ -176,12 +176,13 @@ def write_to_json_batch(zip_data, file_name):
 	data = {}
 	data['videos'] = []
 	for video_data in zip_data:
-		data['videos'].append({
-			'title': video_data[0],
-			'URL' : video_data[1],
-			'transcript': video_data[2],
-			'comments': video_data[3]
-		})
+		if comments != [] or transcript != []:
+			data['videos'].append({
+				'title': video_data[0],
+				'URL' : video_data[1],
+				'transcript': video_data[2],
+				'comments': video_data[3]
+			})
 
 	with open(file_name, 'w') as outfile:
 		json.dump(data, outfile)
@@ -213,16 +214,10 @@ def main():
 	api_key =  str(args["api_key"]) if args["api_key"] else "AIzaSyCsCfOEng2WhtMHQoCi0FX48OPB5tw-F5g"
 	youtube = build("youtube", "v3", developerKey=api_key)
 
-	# Quick-start Test
-	#transcript_test = get_transcripts("Wf4cea5oObY")
-	#comments_test = ["Good", "Bad", "Okay"] #get_comments_by_video_id("Wf4cea5oObY")
-	#title = "Police: Last Week Tonight with John Oliver (HBO)"
-	#URL = construct_url("Wf4cea5oObY")
-	#write_to_json(title, URL, transcript_test, comments_test, "./CNN_Data/JohnOliver.json")
-
-	
+	print("Searching For Channles ... ")
 	fox_news_channel_id = get_channel_id(youtube, channel_1)
 	cnn_channel_id = get_channel_id(youtube, channel_2)
+	print("Search Completed ... ")
 	
 	print("Searching For Videos ... ")
 	videos_fox_news = fetch_all_videos_by_channel_with_search(fox_news_channel_id, keywords)
@@ -261,13 +256,13 @@ def main():
 	# Comments
 
 	# Moving To JSON
+	print("Writing To JSON Files .... ")	
 	data_zip_fox_news = list(zip(title_fox_news, video_url_fox_news, transcript_fox_news, comments_fox_news))
 	data_zip_cnn = list(zip(title_cnn, video_url_cnn, transcript_cnn, comments_cnn))
-
-	print("Writing To JSON Files .... ")
-	write_to_json_batch(data_zip_fox_news, "fox_news_data.json")
-	write_to_json_batch(data_zip_cnn, "cnn_data.json")
+	data_fox_news = write_to_json_batch(data_zip_fox_news, "fox_news_data.json")
+	data_cnn = write_to_json_batch(data_zip_cnn, "cnn_data.json")
 	print("Finishing Writing To JSON Files .... ")
+
 
 if __name__ == '__main__':
 	main()
